@@ -4,6 +4,8 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import config from '@/config';
+import { getToken } from '@/utils/authority';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -36,6 +38,10 @@ const errorHandler = (error: { response: Response }): Response => {
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
+    // 401未授权
+    if (status === 401) {
+      window.location.href = `/user/login?redirect=${window.location.href}`;
+    }
   } else if (!response) {
     notification.error({
       description: '您的网络发生异常，无法连接服务器',
@@ -49,8 +55,35 @@ const errorHandler = (error: { response: Response }): Response => {
  * 配置request请求时的默认参数
  */
 const request = extend({
+  prefix: config.requestPrefix,
   errorHandler, // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  // credentials: 'include', // 默认请求是否带上cookie
 });
+
+// request拦截器, 改变url 或 options.
+request.interceptors.request.use((url, options) => {
+  const token = getToken();
+  console.log(url, options, token);
+  return {
+    url: `${url}`,
+    options: {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  };
+});
+
+// request.interceptors.response.use((response) => {
+//   const codeMaps = {
+//     502: '网关错误。',
+//     503: '服务不可用，服务器暂时过载或维护。',
+//     504: '网关超时。',
+//   };
+//   message.error(codeMaps[response.status]);
+//   return response;
+// });
 
 export default request;

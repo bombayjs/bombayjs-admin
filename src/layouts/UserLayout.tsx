@@ -28,7 +28,7 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
     },
   } = props;
   const { breadcrumb } = getMenuData(routes);
-
+  console.log(routes, getMenuData(routes));
   return (
     <DocumentTitle
       title={getPageTitle({
@@ -46,11 +46,11 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
           <div className={styles.top}>
             <div className={styles.header}>
               <Link to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Ant Design</span>
+                {/* <img alt="logo" className={styles.logo} src={logo} /> */}
+                <span className={styles.title}>Bombayjs Admin</span>
               </Link>
             </div>
-            <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+            <div className={styles.desc}>Bombayjs Admin是Bombayjs前端监控管理后台</div>
           </div>
           {children}
         </div>

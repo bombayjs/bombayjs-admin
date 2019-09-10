@@ -4,13 +4,16 @@ import { Effect } from 'dva';
 import { stringify } from 'querystring';
 
 import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
+import { setAuthority, setToken } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 
+type Status = 'ok' | 'error';
+type CurrentAuthority = 'user' | 'guest' | 'admin';
+
 export interface StateType {
-  status?: 'ok' | 'error';
+  status?: Status;
   type?: string;
-  currentAuthority?: 'user' | 'guest' | 'admin';
+  currentAuthority?: CurrentAuthority;
 }
 
 export interface LoginModelType {
@@ -36,12 +39,13 @@ const Model: LoginModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
+      console.log(response);
       yield put({
         type: 'changeLoginStatus',
-        payload: response,
+        payload: { ...response, type: payload.type },
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.code === 200) {
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -82,11 +86,19 @@ const Model: LoginModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      // if (payload)
+      const status: Status = payload.code === 200 ? 'ok' : 'error';
+      let currentAuthority: CurrentAuthority = 'guest';
+      if (payload.code === 200) {
+        currentAuthority = payload.data.level === 0 ? 'admin' : 'user';
+        setAuthority(currentAuthority);
+        setToken(payload.data.token);
+      }
       return {
         ...state,
-        status: payload.status,
+        status,
         type: payload.type,
+        currentAuthority,
       };
     },
   },

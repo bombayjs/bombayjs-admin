@@ -1,4 +1,12 @@
-import request from 'umi-request';
+import request from '@/utils/request';
+
+/**
+ * 配置request请求时的默认参数
+ */
+// const request = extend({
+//   prefix: config.requestPrefix,
+//   // credentials: 'include', // 默认请求是否带上cookie
+// });
 
 export interface LoginParamsType {
   userName: string;
@@ -8,7 +16,7 @@ export interface LoginParamsType {
 }
 
 export async function fakeAccountLogin(params: LoginParamsType) {
-  return request('/api/login/account', {
+  return request('/api/v1/user/login', {
     method: 'POST',
     data: params,
   });

@@ -140,42 +140,6 @@ class Login extends Component<LoginProps, LoginState> {
               }}
             />
           </Tab>
-          <Tab key="mobile" tab={formatMessage({ id: 'user-login.login.tab-login-mobile' })}>
-            {status === 'error' &&
-              loginType === 'mobile' &&
-              !submitting &&
-              this.renderMessage(
-                formatMessage({ id: 'user-login.login.message-invalid-verification-code' }),
-              )}
-            <Mobile
-              name="mobile"
-              placeholder={formatMessage({ id: 'user-login.phone-number.placeholder' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-login.phone-number.required' }),
-                },
-                {
-                  pattern: /^1\d{10}$/,
-                  message: formatMessage({ id: 'user-login.phone-number.wrong-format' }),
-                },
-              ]}
-            />
-            <Captcha
-              name="captcha"
-              placeholder={formatMessage({ id: 'user-login.verification-code.placeholder' })}
-              countDown={120}
-              onGetCaptcha={this.onGetCaptcha}
-              getCaptchaButtonText={formatMessage({ id: 'user-login.form.get-captcha' })}
-              getCaptchaSecondText={formatMessage({ id: 'user-login.captcha.second' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-login.verification-code.required' }),
-                },
-              ]}
-            />
-          </Tab>
           <div>
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="user-login.login.remember-me" />
@@ -188,10 +152,10 @@ class Login extends Component<LoginProps, LoginState> {
             <FormattedMessage id="user-login.login.login" />
           </Submit>
           <div className={styles.other}>
-            <FormattedMessage id="user-login.login.sign-in-with" />
+            {/* <FormattedMessage id="user-login.login.sign-in-with" />
             <Icon type="alipay-circle" className={styles.icon} theme="outlined" />
             <Icon type="taobao-circle" className={styles.icon} theme="outlined" />
-            <Icon type="weibo-circle" className={styles.icon} theme="outlined" />
+            <Icon type="weibo-circle" className={styles.icon} theme="outlined" /> */}
             <Link className={styles.register} to="/user/register">
               <FormattedMessage id="user-login.login.signup" />
             </Link>
