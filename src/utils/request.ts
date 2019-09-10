@@ -63,7 +63,6 @@ const request = extend({
 // request拦截器, 改变url 或 options.
 request.interceptors.request.use((url, options) => {
   const token = getToken();
-  console.log(url, options, token);
   return {
     url: `${url}`,
     options: {

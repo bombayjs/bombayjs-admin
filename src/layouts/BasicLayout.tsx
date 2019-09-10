@@ -3,7 +3,7 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-
+import { Icon } from 'antd';
 import ProLayout, {
   MenuDataItem,
   BasicLayoutProps as ProLayoutProps,
@@ -18,7 +18,6 @@ import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
-import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 
 export interface BasicLayoutProps extends ProLayoutProps {
@@ -37,39 +36,31 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 /**
  * use Authorized check all menu item
  */
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-  menuList.map(item => {
+const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => {
+  const n = menuList.map(item => {
     const localItem = {
       ...item,
       children: item.children ? menuDataRender(item.children) : [],
     };
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
-
-const footerRender: BasicLayoutProps['footerRender'] = (_, defaultDom) => {
-  if (!isAntDesignPro()) {
-    return defaultDom;
-  }
-  return (
-    <>
-      {defaultDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
-    </>
-  );
+  console.log(menuList);
+  console.log(n);
+  return n;
 };
+
+const footerRender: BasicLayoutProps['footerRender'] = _ => (
+  <>
+    <div
+      style={{
+        padding: '0px 24px 24px',
+        textAlign: 'center',
+      }}
+    >
+      Copyright <Icon type="copyright" /> 2019 bombayjs出品
+    </div>
+  </>
+);
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
   const { dispatch, children, settings } = props;

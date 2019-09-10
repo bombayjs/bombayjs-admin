@@ -11,12 +11,19 @@ import request from '@/utils/request';
 export interface LoginParamsType {
   userName: string;
   password: string;
-  mobile: string;
-  captcha: string;
+  mobile?: string;
+  captcha?: string;
 }
 
 export async function fakeAccountLogin(params: LoginParamsType) {
   return request('/api/v1/user/login', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export async function RegisterDao(params: LoginParamsType) {
+  return request('/api/v1/user/register', {
     method: 'POST',
     data: params,
   });

@@ -93,6 +93,11 @@ export default {
           path: '/user/login',
           component: './user/login',
         },
+        {
+          name: 'register',
+          path: '/user/register',
+          component: './user/register',
+        },
       ],
     },
     {
@@ -116,7 +121,9 @@ export default {
             },
             {
               name: 'settings',
+              authority: ['user'],
               path: '/account/settings',
+              icon: 'setting',
               component: './account/settings',
             },
             {
