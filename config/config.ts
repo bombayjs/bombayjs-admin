@@ -105,7 +105,7 @@ export default {
       component: '../layouts/SecurityLayout',
       routes: [
         {
-          path: '/',
+          path: '/welcome',
           component: '../layouts/BasicLayout',
           authority: ['admin', 'user'],
           routes: [
@@ -117,14 +117,39 @@ export default {
               path: '/welcome',
               name: 'welcome',
               icon: 'smile',
-              component: './Welcome',
+              component: './welcome',
             },
             {
               name: 'settings',
               authority: ['user'],
+              hideInMenu: true,
               path: '/account/settings',
               icon: 'setting',
               component: './account/settings',
+            },
+            {
+              component: './404',
+            },
+          ],
+        },
+        {
+          path: '/',
+          component: '../layouts/HomeLayout',
+          authority: ['admin', 'user'],
+          routes: [
+            {
+              path: '/',
+              redirect: '/home',
+            },
+            {
+              path: '/home',
+              name: '项目列表',
+              component: './projects/list',
+            },
+            {
+              path: '/web/add',
+              name: '新增项目',
+              component: './web/add',
             },
             {
               component: './404',
