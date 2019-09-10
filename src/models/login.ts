@@ -72,6 +72,8 @@ const Model: LoginModelType = {
       const { redirect } = getPageQuery();
       // redirect
       if (window.location.pathname !== '/user/login' && !redirect) {
+        // 清理token
+        setToken('');
         yield put(
           routerRedux.replace({
             pathname: '/user/login',

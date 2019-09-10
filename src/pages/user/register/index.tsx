@@ -28,7 +28,9 @@ class Register extends React.Component<RegisterProps> {
         });
         console.log(result);
         if (result.code === 200) {
-          router.push('/user/login');
+          message.success('登录成功', 1, () => {
+            router.push('/user/login');
+          });
         } else {
           message.error(result.msg);
         }
