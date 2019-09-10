@@ -20,6 +20,8 @@ import {
 import { FormComponentProps } from 'antd/es/form';
 import Link from 'umi/link';
 import router from 'umi/router';
+import imgWX from '@/assets/img/wx.png';
+import imgWeb from '@/assets/img/web.png';
 
 import styles from './style.less';
 
@@ -35,6 +37,8 @@ class Home extends React.Component<RegisterProps> {
   state = {
     loading: true,
     visible: false,
+    projectName: '',
+    projectType: 'web',
   };
 
   onChange = (checked: any) => {
@@ -47,14 +51,32 @@ class Home extends React.Component<RegisterProps> {
     });
   };
 
+  handleOk = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
   handleCancel = () => {
     this.setState({
       visible: false,
     });
   };
 
+  selectType = (e: any) => {
+    this.setState({
+      projectType: e.target.value,
+    });
+  };
+
+  setProjectName = (e: any) => {
+    this.setState({
+      projectName: e.target.value,
+    });
+  };
+
   render() {
-    const { loading } = this.state;
+    const { loading, projectType, projectName } = this.state;
     const list = [];
     const extraContent = (
       <div className={styles.extraContent}>
@@ -123,17 +145,32 @@ class Home extends React.Component<RegisterProps> {
           />
         </Card>
         <Modal
-          title="请选择项目类型"
+          title="新建应用站点"
           visible={this.state.visible}
           onCancel={this.handleCancel}
-          footer={null}
+          onOk={this.handleOk}
         >
-          <Row>
-            <Col span={12}>
-              <Link to="/web/add">web</Link>
-            </Col>
-            <Col span={12}>
-              <Link to="/web/add">微信</Link>
+          <div className={styles['modal-title']}>站点类型：</div>
+          <Radio.Group onChange={this.selectType} defaultValue={projectType}>
+            <Radio value="web">
+              <span className={styles['project-type']}>
+                <img src={imgWeb} alt="web" />
+                <br />
+                web
+              </span>
+            </Radio>
+            <Radio value="wx">
+              <span className={styles['project-type']}>
+                <img src={imgWX} alt="微信" />
+                <br />
+                微信
+              </span>
+            </Radio>
+          </Radio.Group>
+          <Row className={styles.row}>
+            <Col span={4}>应用名称：</Col>
+            <Col span={18}>
+              <Input value={projectName} onChange={this.setProjectName} />
             </Col>
           </Row>
         </Modal>
