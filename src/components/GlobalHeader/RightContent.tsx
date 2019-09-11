@@ -10,6 +10,7 @@ import Avatar from './AvatarDropdown';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
 import SelectProject from '../SelectProject';
+import SelectDatetime from '../SelectDatetime';
 
 export type SiderTheme = 'light' | 'dark';
 export interface GlobalHeaderRightProps extends ConnectProps {
@@ -33,6 +34,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 
   return (
     <div className={className}>
+      <SelectDatetime begin="aaa" end="bbb" onChange={onChange} />
       <SelectProject
         className={styles.action}
         projectList={projectList}
