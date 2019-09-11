@@ -7,6 +7,6 @@ export async function addProjectDao(params: ProjectType) {
   });
 }
 
-export async function demoDao(): Promise<any> {
-  return request('/api/v1/project/add');
+export async function getWebProjectListDao(): Promise<any> {
+  return request('/api/v1/project/web/list');
 }

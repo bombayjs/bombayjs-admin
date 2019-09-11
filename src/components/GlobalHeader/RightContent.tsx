@@ -3,20 +3,28 @@ import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 import { ConnectProps, ConnectState } from '@/models/connect';
+import router from 'umi/router';
+import { ClickParam } from 'antd/es/menu';
 
 import Avatar from './AvatarDropdown';
-import HeaderSearch from '../HeaderSearch';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
+import SelectProject from '../SelectProject';
 
 export type SiderTheme = 'light' | 'dark';
 export interface GlobalHeaderRightProps extends ConnectProps {
   theme?: SiderTheme;
   layout: 'sidemenu' | 'topmenu';
+  projectList: ProjectType[];
+  projectToken: string;
 }
 
 const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
-  const { theme, layout } = props;
+  const { theme, layout, projectList, projectToken } = props;
+  const onChange = ({ key }: ClickParam) => {
+    const { location } = window;
+    location.href = `${location.origin + location.pathname}?token=${key}`;
+  };
   let className = styles.right;
 
   if (theme === 'dark' && layout === 'topmenu') {
@@ -25,50 +33,21 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
 
   return (
     <div className={className}>
-      <HeaderSearch
-        className={`${styles.action} ${styles.search}`}
-        placeholder={formatMessage({
-          id: 'component.globalHeader.search',
-        })}
-        dataSource={[
-          formatMessage({
-            id: 'component.globalHeader.search.example1',
-          }),
-          formatMessage({
-            id: 'component.globalHeader.search.example2',
-          }),
-          formatMessage({
-            id: 'component.globalHeader.search.example3',
-          }),
-        ]}
-        onSearch={value => {
-          console.log('input', value);
-        }}
-        onPressEnter={value => {
-          console.log('enter', value);
-        }}
+      <SelectProject
+        className={styles.action}
+        projectList={projectList}
+        value={projectToken}
+        onChange={onChange}
       />
-      <Tooltip
-        title={formatMessage({
-          id: 'component.globalHeader.help',
-        })}
-      >
-        <a
-          target="_blank"
-          href="https://pro.ant.design/docs/getting-started"
-          rel="noopener noreferrer"
-          className={styles.action}
-        >
-          <Icon type="question-circle-o" />
-        </a>
-      </Tooltip>
       <Avatar />
       <SelectLang className={styles.action} />
     </div>
   );
 };
 
-export default connect(({ settings }: ConnectState) => ({
+export default connect(({ settings, project }: ConnectState) => ({
   theme: settings.navTheme,
   layout: settings.layout,
+  projectList: project.projectList,
+  projectToken: project.projectToken,
 }))(GlobalHeaderRight);

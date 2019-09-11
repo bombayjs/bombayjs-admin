@@ -44,8 +44,6 @@ const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] => {
     };
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
-  console.log(menuList);
-  console.log(n);
   return n;
 };
 
@@ -72,6 +70,12 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
+      });
+      dispatch({
+        type: 'project/fetchProjectList',
+      });
+      dispatch({
+        type: 'project/setProjectToken',
       });
       dispatch({
         type: 'settings/getSetting',

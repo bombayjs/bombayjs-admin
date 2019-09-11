@@ -22,8 +22,8 @@ import Link from 'umi/link';
 import router from 'umi/router';
 import imgWX from '@/assets/img/wx.png';
 import imgWeb from '@/assets/img/web.png';
+import { addProjectDao } from '@/services/project';
 
-import { addProjectDao } from './service';
 import styles from './style.less';
 
 const RadioButton = Radio.Button;
