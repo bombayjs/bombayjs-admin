@@ -152,6 +152,11 @@ export default {
               component: './web/add',
             },
             {
+              path: '/web/dashboard',
+              name: 'dashboard',
+              component: './web/dashboard',
+            },
+            {
               component: './404',
             },
           ],
