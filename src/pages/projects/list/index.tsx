@@ -23,23 +23,35 @@ import router from 'umi/router';
 import imgWX from '@/assets/img/wx.png';
 import imgWeb from '@/assets/img/web.png';
 
+import { addProjectDao } from './service';
 import styles from './style.less';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Search } = Input;
 
-interface RegisterProps {
+interface HomeProps {
   form: FormComponentProps['form'];
 }
 
-class Home extends React.Component<RegisterProps> {
-  state = {
-    loading: true,
-    visible: false,
-    projectName: '',
-    projectType: 'web',
-  };
+interface HomeStates {
+  project: ProjectType;
+  loading: boolean;
+  visible: boolean;
+}
+
+class Home extends React.Component<HomeProps, HomeStates> {
+  constructor(props: HomeProps) {
+    super(props);
+    this.state = {
+      loading: true,
+      visible: false,
+      project: {
+        project_name: '',
+        type: 'web',
+      },
+    };
+  }
 
   onChange = (checked: any) => {
     this.setState({ loading: !checked });
@@ -51,10 +63,17 @@ class Home extends React.Component<RegisterProps> {
     });
   };
 
-  handleOk = () => {
-    this.setState({
-      visible: false,
-    });
+  handleOk = async () => {
+    const { project } = this.state;
+    const result = await addProjectDao(project);
+    if (result.code === 200) {
+      this.setState({
+        visible: false,
+      });
+      router.push(`/web/setting?token=${result.data.token}`);
+    } else {
+      message.error(result.msg);
+    }
   };
 
   handleCancel = () => {
@@ -64,19 +83,27 @@ class Home extends React.Component<RegisterProps> {
   };
 
   selectType = (e: any) => {
+    const { project } = this.state;
     this.setState({
-      projectType: e.target.value,
+      project: {
+        ...project,
+        type: e.target.value,
+      },
     });
   };
 
   setProjectName = (e: any) => {
+    const { project } = this.state;
     this.setState({
-      projectName: e.target.value,
+      project: {
+        ...project,
+        project_name: e.target.value,
+      },
     });
   };
 
   render() {
-    const { loading, projectType, projectName } = this.state;
+    const { loading, project } = this.state;
     const list = [];
     const extraContent = (
       <div className={styles.extraContent}>
@@ -151,7 +178,7 @@ class Home extends React.Component<RegisterProps> {
           onOk={this.handleOk}
         >
           <div className={styles['modal-title']}>站点类型：</div>
-          <Radio.Group onChange={this.selectType} defaultValue={projectType}>
+          <Radio.Group onChange={this.selectType} defaultValue={project.type}>
             <Radio value="web">
               <span className={styles['project-type']}>
                 <img src={imgWeb} alt="web" />
@@ -170,7 +197,7 @@ class Home extends React.Component<RegisterProps> {
           <Row className={styles.row}>
             <Col span={4}>应用名称：</Col>
             <Col span={18}>
-              <Input value={projectName} onChange={this.setProjectName} />
+              <Input value={project.project_name} onChange={this.setProjectName} />
             </Col>
           </Row>
         </Modal>

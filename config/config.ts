@@ -1,5 +1,6 @@
 import { IConfig, IPlugin } from 'umi-types';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
+import routes from './router.config';
 
 import slash from 'slash2';
 import webpackPlugin from './plugin.config';
@@ -83,93 +84,7 @@ export default {
   },
   devtool: isAntDesignProPreview ? 'source-map' : false,
   // umi routes: https://umijs.org/zh/guide/router.html
-  routes: [
-    {
-      path: '/user',
-      component: '../layouts/UserLayout',
-      routes: [
-        {
-          name: 'login',
-          path: '/user/login',
-          component: './user/login',
-        },
-        {
-          name: 'register',
-          path: '/user/register',
-          component: './user/register',
-        },
-      ],
-    },
-    {
-      path: '/',
-      component: '../layouts/SecurityLayout',
-      routes: [
-        {
-          path: '/welcome',
-          component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
-          routes: [
-            {
-              path: '/',
-              redirect: '/welcome',
-            },
-            {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './welcome',
-            },
-            {
-              name: 'settings',
-              authority: ['user'],
-              hideInMenu: true,
-              path: '/account/settings',
-              icon: 'setting',
-              component: './account/settings',
-            },
-            {
-              component: './404',
-            },
-          ],
-        },
-        {
-          path: '/',
-          component: '../layouts/HomeLayout',
-          authority: ['admin', 'user'],
-          routes: [
-            {
-              path: '/',
-              redirect: '/home',
-            },
-            {
-              path: '/home',
-              name: '项目列表',
-              component: './projects/list',
-            },
-            {
-              path: '/web/add',
-              name: '新增项目',
-              component: './web/add',
-            },
-            {
-              path: '/web/dashboard',
-              name: 'dashboard',
-              component: './web/dashboard',
-            },
-            {
-              component: './404',
-            },
-          ],
-        },
-        {
-          component: './404',
-        },
-      ],
-    },
-    {
-      component: './404',
-    },
-  ],
+  routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     'primary-color': primaryColor,

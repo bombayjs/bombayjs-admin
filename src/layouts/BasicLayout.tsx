@@ -63,7 +63,7 @@ const footerRender: BasicLayoutProps['footerRender'] = _ => (
 );
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
-  const { dispatch, children, settings } = props;
+  const { dispatch, children, settings, location } = props;
   /**
    * constructor
    */
@@ -99,7 +99,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         if (menuItemProps.isUrl) {
           return defaultDom;
         }
-        return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+        return <Link to={menuItemProps.path + (location as any).search}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
         {
