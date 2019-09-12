@@ -29,9 +29,16 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
     .add(-30, 'minutes')
     .format('YYYY-MM-DD HH:mm');
   const initEnd = moment().format('YYYY-MM-DD HH:mm');
-  const initDateRange = `${initBegin} 至 ${initEnd}`;
-  // if (sessionDateRange) {
-  // }
+  let initDateRange = `${initBegin} 至 ${initEnd}`;
+  if (sessionDateRange) {
+    const sessionDateRangeObj: DateRangeType = JSON.parse(sessionDateRange);
+    const { type, begin, end } = sessionDateRangeObj;
+    if (type === 'range') {
+      initDateRange = `${begin} 至 ${end}`;
+    } else {
+      initDateRange = dateRangeDict[type];
+    }
+  }
   const [dateRange, setDateRange] = useState(initDateRange);
   const { theme, layout, projectList, projectToken } = props;
   const onChange = ({ key }: ClickParam) => {
@@ -40,7 +47,11 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
   };
 
   const setSession = (type: string, begin: string, end: string) => {
-    setSessionDateRange(type, begin, end);
+    setSessionDateRange({
+      type,
+      begin,
+      end,
+    });
   };
 
   const onSetDateRange = (type: string | [string, string]) => {

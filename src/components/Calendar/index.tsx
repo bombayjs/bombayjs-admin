@@ -1,7 +1,6 @@
 /* eslint react/no-multi-comp:0, no-console:0 */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import RangeCalendar from 'rc-calendar/lib/RangeCalendar';
 import zhCN from 'rc-calendar/lib/locale/zh_CN';
 import enUS from 'rc-calendar/lib/locale/en_US';
@@ -37,7 +36,7 @@ const timePickerElement = (
   />
 );
 
-function disabledDate(current) {
+function disabledDate(current: any) {
   const date = moment();
   date.hour(0);
   date.minute(0);

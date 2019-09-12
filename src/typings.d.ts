@@ -20,6 +20,10 @@ declare module 'nzh/cn';
 declare module 'webpack-theme-color-replacer';
 declare module 'webpack-theme-color-replacer/client';
 
+declare module 'rc-calendar*';
+declare module 'rc-calendar';
+declare module 'rc-time-picker*';
+
 // google analytics interface
 interface GAFieldsObject {
   eventCategory: string;
