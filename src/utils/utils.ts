@@ -22,3 +22,18 @@ export const isAntDesignProOrDev = (): boolean => {
 };
 
 export const getPageQuery = () => parse(window.location.href.split('?')[1]);
+
+// 设置选择的日期范围
+export const setSessionDateRange = (type: string, begin: string, end: string) => {
+  sessionStorage.setItem(
+    'BOMBAYJS_DATE_RANGE',
+    JSON.stringify({
+      type,
+      begin,
+      end,
+    }),
+  );
+};
+
+// 设置选择的日期范围
+export const getSessionDateRange = () => sessionStorage.getItem('BOMBAYJS_DATE_RANGE');

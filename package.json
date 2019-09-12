@@ -56,6 +56,8 @@
     "omit.js": "^1.0.2",
     "path-to-regexp": "^3.0.0",
     "qs": "^6.7.0",
+    "rc-calendar": "^9.15.5",
+    "rc-time-picker": "^3.7.2",
     "react": "^16.8.6",
     "react-copy-to-clipboard": "^5.0.1",
     "react-document-title": "^2.0.3",
