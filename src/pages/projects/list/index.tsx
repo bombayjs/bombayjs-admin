@@ -1,6 +1,9 @@
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
+import { ConnectProps, ConnectState } from '@/models/connect';
+import { Dispatch } from 'redux';
+import { connect } from 'dva';
 import {
   Form,
   Icon,
@@ -30,21 +33,26 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const { Search } = Input;
 
-interface HomeProps {
+export interface HomeProps extends ConnectProps {
   form: FormComponentProps['form'];
+  projectList: ProjectType[];
+  loading: boolean;
+  dispatch: Dispatch;
 }
 
 interface HomeStates {
   project: ProjectType;
-  loading: boolean;
   visible: boolean;
 }
 
+@connect(({ project, loading }: ConnectState) => ({
+  projectList: project.projectList,
+  loading: loading.effects['project/fetchProjectList'],
+}))
 class Home extends React.Component<HomeProps, HomeStates> {
   constructor(props: HomeProps) {
     super(props);
     this.state = {
-      loading: true,
       visible: false,
       project: {
         project_name: '',
@@ -53,9 +61,11 @@ class Home extends React.Component<HomeProps, HomeStates> {
     };
   }
 
-  onChange = (checked: any) => {
-    this.setState({ loading: !checked });
-  };
+  componentDidMount() {
+    this.props.dispatch({
+      type: 'project/fetchProjectList',
+    });
+  }
 
   showModal = () => {
     this.setState({
@@ -103,8 +113,8 @@ class Home extends React.Component<HomeProps, HomeStates> {
   };
 
   render() {
-    const { loading, project } = this.state;
-    const list = [];
+    const { project } = this.state;
+    const { projectList, loading } = this.props;
     const extraContent = (
       <div className={styles.extraContent}>
         <RadioGroup defaultValue="all">
@@ -116,11 +126,35 @@ class Home extends React.Component<HomeProps, HomeStates> {
       </div>
     );
 
+    const ListContent = (props: { data: ProjectType }) => {
+      const { project_name: projectName, type, token, is_use: isUse } = props.data;
+      return (
+        <div className={styles.listContent}>
+          <div className={styles.listContentItem}>
+            <span>ProjectName</span>
+            <p>{projectName}</p>
+          </div>
+          <div className={styles.listContentItem}>
+            <span>type</span>
+            <p>{type}</p>
+          </div>
+          <div className={styles.listContentItem}>
+            <span>token</span>
+            <p>{token}</p>
+          </div>
+          <div className={styles.listContentItem}>
+            <span>is_use</span>
+            <p>{isUse}</p>
+          </div>
+        </div>
+      );
+    };
+
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
-      pageSize: 5,
-      total: 50,
+      pageSize: 10,
+      total: projectList.length,
     };
 
     return (
@@ -146,27 +180,26 @@ class Home extends React.Component<HomeProps, HomeStates> {
             rowKey="id"
             loading={loading}
             pagination={paginationProps}
-            dataSource={list}
+            dataSource={projectList}
             renderItem={item => (
               <List.Item
                 actions={[
-                  <a
-                  // onClick={e => {
-                  //   e.preventDefault();
-                  //   this.showEditModal(item);
-                  // }}
-                  >
-                    编辑
-                  </a>,
+                  <Link to={`/web/setting?token=${item.token}`}>编辑</Link>,
                   // <MoreBtn current={item} />,
                 ]}
               >
-                {/* <List.Item.Meta
-                    avatar={<Avatar src={item.logo} shape="square" size="large" />}
-                    title={<a href={item.href}>{item.title}</a>}
-                    description={item.subDescription}
-                  />
-                  <ListContent data={item} /> */}
+                <List.Item.Meta
+                  avatar={
+                    item.type === 'wx' ? (
+                      <img src={imgWX} alt="微信" />
+                    ) : (
+                      <img src={imgWeb} alt="web" />
+                    )
+                  }
+                  title={<Link to={`/web/setting?token=${item.token}`}>{item.project_name}</Link>}
+                  description="xxxx"
+                />
+                <ListContent data={item} />
               </List.Item>
             )}
           />
