@@ -39,6 +39,18 @@ export default [
         icon: 'dashboard',
       },
       {
+        path: '/web/product',
+        name: 'product',
+        icon: 'fund',
+        routes: [
+          {
+            path: '/web/product/circle',
+            name: 'circle',
+            component: './web/product/circle',
+          },
+        ],
+      },
+      {
         component: './404',
       },
     ],

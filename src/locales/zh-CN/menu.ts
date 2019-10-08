@@ -49,4 +49,6 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
 
   'menu.setting': '项目设置',
+  'menu.product': '产品运营',
+  'menu.product.circle': '圈选',
 };

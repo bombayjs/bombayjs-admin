@@ -112,6 +112,26 @@ class Home extends React.Component<HomeProps, HomeStates> {
     });
   };
 
+  setProjectUrl = (e: any) => {
+    const { project } = this.state;
+    this.setState({
+      project: {
+        ...project,
+        url: e.target.value,
+      },
+    });
+  };
+
+  setProjectAppId = (e: any) => {
+    const { project } = this.state;
+    this.setState({
+      project: {
+        ...project,
+        app_id: e.target.value,
+      },
+    });
+  };
+
   render() {
     const { project } = this.state;
     const { projectList, loading } = this.props;
@@ -233,6 +253,21 @@ class Home extends React.Component<HomeProps, HomeStates> {
               <Input value={project.project_name} onChange={this.setProjectName} />
             </Col>
           </Row>
+          {project.type === 'web' ? (
+            <Row className={styles.row}>
+              <Col span={4}>应用url：</Col>
+              <Col span={18}>
+                <Input value={project.url} onChange={this.setProjectUrl} />
+              </Col>
+            </Row>
+          ) : (
+            <Row className={styles.row}>
+              <Col span={4}>应用appId：</Col>
+              <Col span={18}>
+                <Input value={project.app_id} onChange={this.setProjectAppId} />
+              </Col>
+            </Row>
+          )}
         </Modal>
       </div>
     );

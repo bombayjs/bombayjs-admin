@@ -1,6 +1,7 @@
 interface ProjectType {
   project_name: string; // 系统名称
   type: 'web' | 'wx'; // 浏览器：web  微信小程序 ：wx
+  url: string; // 首页地址
   token?: string; // 唯一码
   app_id?: string; // 系统appId标识
   user_id?: string[]; // 应用所属用户ID

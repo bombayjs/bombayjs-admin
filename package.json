@@ -49,6 +49,7 @@
     "@antv/data-set": "^0.10.2",
     "antd": "^3.20.0",
     "bizcharts": "^3.5.5",
+    "bizcharts-plugin-slider": "^2.1.1-beta.1",
     "classnames": "^2.2.6",
     "dva": "^2.4.1",
     "lodash": "^4.17.11",
