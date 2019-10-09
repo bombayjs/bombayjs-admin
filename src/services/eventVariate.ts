@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
-export async function addEventVariateDao(params: EventVariate) {
-  return request('/api/v1/eventvariate/add', {
+export async function setEventVariateDao(params: EventVariate) {
+  return request('/api/v1/eventvariate/set', {
     method: 'POST',
     data: params,
   });

@@ -33,43 +33,12 @@ import { FormComponentProps } from 'antd/es/form';
 import { TableRowSelection } from 'antd/lib/table';
 import Link from 'umi/link';
 import router from 'umi/router';
-import { getEventVariateListDao, addEventVariateDao } from '@/services/eventVariate';
+import { getEventVariateListDao, setEventVariateDao } from '@/services/eventVariate';
 import EventVariateForm from '@/components/EventVariateForm';
 
 import styles from './style.less';
 
 const { Option } = Select;
-
-const columns = [
-  {
-    title: '名称',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text: string) => <a>{text}</a>,
-  },
-  {
-    title: '标识符',
-    dataIndex: 'marker',
-    key: 'marker',
-    width: '300px',
-  },
-  {
-    title: '类型',
-    dataIndex: 'type',
-    key: 'type',
-  },
-  {
-    title: '操作',
-    key: 'action',
-    render: (text: any, record: EventVariate) => (
-      <span>
-        <a>编辑</a>
-        <Divider type="vertical" />
-        <a>删除</a>
-      </span>
-    ),
-  },
-];
 
 export interface HomeProps extends ConnectProps {
   form: FormComponentProps['form'];
@@ -81,10 +50,16 @@ export interface HomeProps extends ConnectProps {
 
 interface HomeStates {
   data: EventVariate[];
+  columns: any[];
   rowSelection: TableRowSelection<EventVariate>;
   visible: boolean;
   selectedRows: EventVariate[];
   loading: boolean;
+  record: {
+    _id: string;
+    name: string;
+    marker: string;
+  }; // 正在编辑的事件
 }
 
 @connect(({ project, loading }: ConnectState) => ({
@@ -98,6 +73,48 @@ class Home extends React.Component<HomeProps, HomeStates> {
     const project = props.projectList.find(item => item.token === props.projectToken);
     this.state = {
       data: [],
+      columns: [
+        {
+          title: '名称',
+          dataIndex: 'name',
+          key: 'name',
+          render: (text: string) => <a>{text}</a>,
+        },
+        {
+          title: '标识符',
+          dataIndex: 'marker',
+          key: 'marker',
+          width: '300px',
+        },
+        {
+          title: '类型',
+          dataIndex: 'type',
+          key: 'type',
+        },
+        {
+          title: '操作',
+          key: 'action',
+          render: (text: any, record: EventVariate) => {
+            const edit = record.type !== 'circle' && (
+              <>
+                <a onClick={() => this.handleModalVisible(true, record)}>编辑</a>
+                <Divider type="vertical" />
+              </>
+            );
+            const active = record.is_use ? (
+              <a onClick={() => this.handleActive(false, record)}>删除</a>
+            ) : (
+              <a onClick={() => this.handleActive(true, record)}>激活</a>
+            );
+            return (
+              <span>
+                {edit}
+                {active}
+              </span>
+            );
+          },
+        },
+      ],
       rowSelection: {
         onChange: (selectedRowKeys, selectedRows) => {
           this.setState({
@@ -112,6 +129,11 @@ class Home extends React.Component<HomeProps, HomeStates> {
       visible: false,
       selectedRows: [],
       loading: false,
+      record: {
+        _id: '',
+        name: '',
+        marker: '',
+      },
     };
   }
 
@@ -135,13 +157,42 @@ class Home extends React.Component<HomeProps, HomeStates> {
     }
   }
 
-  handleModalVisible = (visible: boolean) => {
+  handleModalVisible = (visible: boolean, record?: EventVariate) => {
+    let id: string | undefined = '';
+    let name = '';
+    let marker = '';
+    if (record) {
+      ({ _id: id, name, marker } = record);
+    }
     this.setState({
       visible,
+      record: {
+        _id: id as string,
+        name,
+        marker,
+      },
     });
   };
 
-  addEventVariate = () => {};
+  handleActive = async (active: boolean, record: EventVariate) => {
+    const variate: EventVariate = { ...record, is_use: active ? 1 : 0 };
+    const result = await setEventVariateDao(variate);
+    if (result.code === 200) {
+      const { form } = this.props;
+      const fieldsValue = form.getFieldsValue();
+      const cond: GetEventVariateListConditions = {
+        project_token: this.props.projectToken,
+      };
+      if (fieldsValue.name) cond.name = fieldsValue.name.trim();
+      if (fieldsValue.is_use === 0 || fieldsValue.is_use === 1) cond.is_use = fieldsValue.is_use;
+      this.getEventVariate(cond);
+      this.setState({
+        visible: false,
+      });
+    } else {
+      message.error(result.msg);
+    }
+  };
 
   handleSearch = e => {
     e.preventDefault();
@@ -169,12 +220,14 @@ class Home extends React.Component<HomeProps, HomeStates> {
 
   handleSubmit = async values => {
     const variate: EventVariate = {
+      _id: this.state.record._id,
       project_token: this.props.projectToken, // 项目id
       name: values.name, // 事件名称
       marker: values.marker, // 标识符 圈选就是路径
       type: 'customer', // 类型
     };
-    const result = await addEventVariateDao(variate);
+
+    const result = await setEventVariateDao(variate);
     if (result.code === 200) {
       const { form } = this.props;
       const fieldsValue = form.getFieldsValue();
@@ -230,7 +283,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
   }
 
   render() {
-    const { data, rowSelection, selectedRows, loading, visible } = this.state;
+    const { data, columns, rowSelection, selectedRows, loading, visible, record } = this.state;
 
     return (
       <div className={styles.tableList}>
@@ -256,15 +309,15 @@ class Home extends React.Component<HomeProps, HomeStates> {
           showIcon
         />
         <Table
-          rowKey={record => record.marker}
+          rowKey={item => item.marker}
           loading={loading}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={data}
         />
         <EventVariateForm
-          name=""
-          marker=""
+          name={record.name}
+          marker={record.marker}
           visible={visible}
           onClose={() => this.handleModalVisible(false)}
           handleSubmit={this.handleSubmit}

@@ -6,4 +6,8 @@ module.exports = {
     ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION: true,
     page: true,
   },
+  rules: {
+    ...strictEslint.rules,
+    'no-underscore-dangle': 0,
+  },
 };
