@@ -51,4 +51,5 @@ export default {
   'menu.setting': '项目设置',
   'menu.product': '产品运营',
   'menu.product.circle': '圈选',
+  'menu.product.eventvariate': '事件管理',
 };

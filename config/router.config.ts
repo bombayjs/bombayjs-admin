@@ -48,6 +48,11 @@ export default [
             name: 'circle',
             component: './web/product/circle',
           },
+          {
+            path: '/web/product/eventvariate',
+            name: 'eventvariate',
+            component: './web/product/eventvariate',
+          },
         ],
       },
       {

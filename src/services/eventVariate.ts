@@ -7,6 +7,9 @@ export async function addEventVariateDao(params: EventVariate) {
   });
 }
 
-export async function getWebProjectListDao(): Promise<any> {
-  return request('/api/v1/project/web/list');
+export async function getEventVariateListDao(params: GetEventVariateListConditions): Promise<any> {
+  return request('/api/v1/eventvariate/list', {
+    method: 'POST',
+    data: params,
+  });
 }

@@ -25,18 +25,12 @@ import {
   notification,
 } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
-import Link from 'umi/link';
-import router from 'umi/router';
-import imgWX from '@/assets/img/wx.png';
-import imgWeb from '@/assets/img/web.png';
 import { addEventVariateDao } from '@/services/eventVariate';
+import EventVariateForm from '@/components/EventVariateForm';
 
 import styles from './style.less';
 
 const ButtonGroup = Button.Group;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const { Search } = Input;
 
 export interface HomeProps extends ConnectProps {
   form: FormComponentProps['form'];
@@ -141,12 +135,6 @@ class Home extends React.Component<HomeProps, HomeStates> {
     });
   };
 
-  onClose = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
   goBack = () => {
     const { projectUrl, tempProjectUrl } = this.state;
     // projectUrl和tempProjectUrl想等时不再回退
@@ -170,34 +158,31 @@ class Home extends React.Component<HomeProps, HomeStates> {
     );
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFields(async (err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-        const variate: EventVariate = {
-          project_token: this.props.projectToken, // 项目id
-          name: values.name, // 事件名称
-          marker: values.path, // 标识符 圈选就是路径
-          type: 'circle', // 类型
-        };
-        const result = await addEventVariateDao(variate);
-        if (result.code === 200) {
-          this.setState({
-            visible: false,
-            elmName: '',
-          });
-        } else {
-          message.error(result.msg);
-        }
-      }
+  handleModalVisible = (visible: boolean) => {
+    this.setState({
+      visible,
     });
   };
 
-  hasErrors = fieldsError => Object.keys(fieldsError).some(field => fieldsError[field]);
+  handleSubmit = async values => {
+    const variate: EventVariate = {
+      project_token: this.props.projectToken, // 项目id
+      name: values.name, // 事件名称
+      marker: values.marker, // 标识符 圈选就是路径
+      type: 'circle', // 类型
+    };
+    const result = await addEventVariateDao(variate);
+    if (result.code === 200) {
+      this.setState({
+        visible: false,
+        elmName: '',
+      });
+    } else {
+      message.error(result.msg);
+    }
+  };
 
   render() {
-    const { getFieldDecorator, getFieldsError } = this.props.form;
     const {
       projectType,
       projectUrl,
@@ -236,7 +221,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
     return (
       <div>
         <Row gutter={2} className={styles.header}>
-          <Col span={2}>
+          <Col span={3}>
             <Radio.Group value={circleing} onChange={this.handleCircleChange}>
               <Radio.Button value={false}>浏览</Radio.Button>
               <Radio.Button value>圈选</Radio.Button>
@@ -270,32 +255,13 @@ class Home extends React.Component<HomeProps, HomeStates> {
           className={styles.iframe}
           src={projectUrl}
         ></iframe>
-        <Drawer
-          title="定义元素"
-          placement="right"
-          closable
-          onClose={this.onClose}
+        <EventVariateForm
+          name={elmName}
+          marker={elmPath}
           visible={visible}
-        >
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Item label="元素名称">
-              {getFieldDecorator('name', {
-                initialValue: elmName,
-                rules: [{ required: true, message: '请输入元素名称!', type: 'string' }],
-              })(<Input />)}
-            </Form.Item>
-            <Form.Item label="元素路径">
-              {getFieldDecorator('path', {
-                initialValue: elmPath,
-              })(<Input readOnly />)}
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" disabled={this.hasErrors(getFieldsError())}>
-                保存
-              </Button>
-            </Form.Item>
-          </Form>
-        </Drawer>
+          onClose={() => this.handleModalVisible(false)}
+          handleSubmit={this.handleSubmit}
+        />
       </div>
     );
   }
