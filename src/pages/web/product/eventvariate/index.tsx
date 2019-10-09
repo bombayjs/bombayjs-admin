@@ -158,16 +158,16 @@ class Home extends React.Component<HomeProps, HomeStates> {
   }
 
   handleModalVisible = (visible: boolean, record?: EventVariate) => {
-    let id: string | undefined = '';
+    let _id: string | undefined = '';
     let name = '';
     let marker = '';
     if (record) {
-      ({ _id: id, name, marker } = record);
+      ({ _id, name, marker } = record);
     }
     this.setState({
       visible,
       record: {
-        _id: id as string,
+        _id: _id as string,
         name,
         marker,
       },
