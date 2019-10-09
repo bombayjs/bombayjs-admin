@@ -2,7 +2,7 @@ import React from 'react';
 import { Drawer, Button, Form, Input } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 
-interface EventVariateFormProps {
+interface IProps {
   name: string;
   marker: string;
   form: FormComponentProps['form'];
@@ -11,7 +11,7 @@ interface EventVariateFormProps {
   handleSubmit: (values) => void;
 }
 
-const EventVariateForm: React.FC<EventVariateFormProps> = props => {
+const EventVariateForm: React.FC<IProps> = props => {
   const { getFieldDecorator, getFieldsError } = props.form;
   const { name, marker, visible, onClose, handleSubmit } = props;
 

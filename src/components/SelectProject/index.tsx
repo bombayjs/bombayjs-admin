@@ -5,7 +5,7 @@ import styles from './index.less';
 
 interface SelectProjectProps {
   className?: string;
-  projectList: ProjectType[];
+  projectList: IProjectType[];
   value: string;
   onChange: ({ key }: ClickParam) => void;
 }

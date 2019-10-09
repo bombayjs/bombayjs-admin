@@ -1,10 +1,10 @@
-interface DateRangeType {
+interface IDateRangeType {
   type: string;
   begin: string;
   end: string;
 }
 
-interface EventVariate {
+interface IEventVariate {
   _id?: string;
   user_id?: string;
   project_token: string; // 项目id
@@ -14,7 +14,7 @@ interface EventVariate {
   is_use?: 0 | 1; // 是否有效
 }
 
-interface GetEventVariateListConditions {
+interface IGetEventVariateListConditions {
   project_token: string;
   name?: string;
   is_use?: 0 | 1;

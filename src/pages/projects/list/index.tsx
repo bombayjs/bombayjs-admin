@@ -35,13 +35,13 @@ const { Search } = Input;
 
 export interface HomeProps extends ConnectProps {
   form: FormComponentProps['form'];
-  projectList: ProjectType[];
+  projectList: IProjectType[];
   loading: boolean;
   dispatch: Dispatch;
 }
 
 interface HomeStates {
-  project: ProjectType;
+  project: IProjectType;
   visible: boolean;
 }
 
@@ -146,7 +146,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
       </div>
     );
 
-    const ListContent = (props: { data: ProjectType }) => {
+    const ListContent = (props: { data: IProjectType }) => {
       const { project_name: projectName, type, token, is_use: isUse } = props.data;
       return (
         <div className={styles.listContent}>

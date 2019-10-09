@@ -42,18 +42,18 @@ const { Option } = Select;
 
 export interface HomeProps extends ConnectProps {
   form: FormComponentProps['form'];
-  projectList: ProjectType[];
+  projectList: IProjectType[];
   projectToken: string;
   loading: boolean;
   dispatch: Dispatch;
 }
 
 interface HomeStates {
-  data: EventVariate[];
+  data: IEventVariate[];
   columns: any[];
-  rowSelection: TableRowSelection<EventVariate>;
+  rowSelection: TableRowSelection<IEventVariate>;
   visible: boolean;
-  selectedRows: EventVariate[];
+  selectedRows: IEventVariate[];
   loading: boolean;
   record: {
     _id: string;
@@ -94,7 +94,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
         {
           title: '操作',
           key: 'action',
-          render: (text: any, record: EventVariate) => {
+          render: (text: any, record: IEventVariate) => {
             const edit = record.type !== 'circle' && (
               <>
                 <a onClick={() => this.handleModalVisible(true, record)}>编辑</a>
@@ -146,7 +146,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
     });
   }
 
-  async getEventVariate(condition: GetEventVariateListConditions) {
+  async getEventVariate(condition: IGetEventVariateListConditions) {
     this.setState({ loading: true });
     const result = await getEventVariateListDao(condition);
     if (result.code === 200) {
@@ -157,7 +157,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
     }
   }
 
-  handleModalVisible = (visible: boolean, record?: EventVariate) => {
+  handleModalVisible = (visible: boolean, record?: IEventVariate) => {
     let _id: string | undefined = '';
     let name = '';
     let marker = '';
@@ -174,13 +174,13 @@ class Home extends React.Component<HomeProps, HomeStates> {
     });
   };
 
-  handleActive = async (active: boolean, record: EventVariate) => {
-    const variate: EventVariate = { ...record, is_use: active ? 1 : 0 };
+  handleActive = async (active: boolean, record: IEventVariate) => {
+    const variate: IEventVariate = { ...record, is_use: active ? 1 : 0 };
     const result = await setEventVariateDao(variate);
     if (result.code === 200) {
       const { form } = this.props;
       const fieldsValue = form.getFieldsValue();
-      const cond: GetEventVariateListConditions = {
+      const cond: IGetEventVariateListConditions = {
         project_token: this.props.projectToken,
       };
       if (fieldsValue.name) cond.name = fieldsValue.name.trim();
@@ -201,7 +201,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      const cond: GetEventVariateListConditions = {
+      const cond: IGetEventVariateListConditions = {
         project_token: this.props.projectToken,
       };
       if (fieldsValue.name) cond.name = fieldsValue.name.trim();
@@ -219,7 +219,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
   };
 
   handleSubmit = async values => {
-    const variate: EventVariate = {
+    const variate: IEventVariate = {
       _id: this.state.record._id,
       project_token: this.props.projectToken, // 项目id
       name: values.name, // 事件名称
@@ -231,7 +231,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
     if (result.code === 200) {
       const { form } = this.props;
       const fieldsValue = form.getFieldsValue();
-      const cond: GetEventVariateListConditions = {
+      const cond: IGetEventVariateListConditions = {
         project_token: this.props.projectToken,
       };
       if (fieldsValue.name) cond.name = fieldsValue.name.trim();

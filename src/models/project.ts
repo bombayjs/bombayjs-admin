@@ -7,7 +7,7 @@ import { getPageQuery } from '@/utils/utils';
 
 export interface ProjectStateType {
   projectToken?: string;
-  projectList?: ProjectType[];
+  projectList?: IProjectType[];
 }
 
 export interface ProjectModelType {

@@ -34,7 +34,7 @@ const ButtonGroup = Button.Group;
 
 export interface HomeProps extends ConnectProps {
   form: FormComponentProps['form'];
-  projectList: ProjectType[];
+  projectList: IProjectType[];
   projectToken: string;
   loading: boolean;
   dispatch: Dispatch;
@@ -165,7 +165,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
   };
 
   handleSubmit = async values => {
-    const variate: EventVariate = {
+    const variate: IEventVariate = {
       project_token: this.props.projectToken, // 项目id
       name: values.name, // 事件名称
       marker: values.marker, // 标识符 圈选就是路径

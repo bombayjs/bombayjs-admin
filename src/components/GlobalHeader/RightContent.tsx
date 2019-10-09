@@ -19,7 +19,7 @@ export type SiderTheme = 'light' | 'dark';
 export interface GlobalHeaderRightProps extends ConnectProps {
   theme?: SiderTheme;
   layout: 'sidemenu' | 'topmenu';
-  projectList: ProjectType[];
+  projectList: IProjectType[];
   projectToken: string;
 }
 
@@ -31,7 +31,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
   const initEnd = moment().format('YYYY-MM-DD HH:mm');
   let initDateRange = `${initBegin} 至 ${initEnd}`;
   if (sessionDateRange) {
-    const sessionDateRangeObj: DateRangeType = JSON.parse(sessionDateRange);
+    const sessionDateRangeObj: IDateRangeType = JSON.parse(sessionDateRange);
     const { type, begin, end } = sessionDateRangeObj;
     if (type === 'range') {
       initDateRange = `${begin} 至 ${end}`;

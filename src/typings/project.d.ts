@@ -1,4 +1,4 @@
-interface ProjectType {
+interface IProjectType {
   project_name: string; // 系统名称
   type: 'web' | 'wx'; // 浏览器：web  微信小程序 ：wx
   url: string; // 首页地址
