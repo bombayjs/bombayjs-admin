@@ -305,7 +305,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
               已选择 <a style={{ fontWeight: 600 }}>{selectedRows.length}</a> 项
             </Fragment>
           }
-          type="warning"
+          type="success"
           showIcon
         />
         <Table

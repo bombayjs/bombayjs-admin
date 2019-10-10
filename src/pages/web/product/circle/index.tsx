@@ -109,7 +109,6 @@ class Home extends React.Component<HomeProps, HomeStates> {
     const circleing = e.target.value;
 
     const iframe = this.iframeRef.current;
-
     iframe.contentWindow.postMessage(
       {
         t: 'setCircle',
