@@ -76,7 +76,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
   handleOk = async () => {
     const { project } = this.state;
     const result = await addProjectDao(project);
-    if (result.code === 200) {
+    if (result && result.code === 200) {
       this.setState({
         visible: false,
       });

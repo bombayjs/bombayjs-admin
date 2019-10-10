@@ -27,7 +27,7 @@ class Register extends React.Component<RegisterProps> {
           password: values.password,
         });
         console.log(result);
-        if (result.code === 200) {
+        if (result && result.code === 200) {
           message.success('登录成功', 1, () => {
             router.push('/user/login');
           });

@@ -172,7 +172,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
       type: 'circle', // 类型
     };
     const result = await addEventVariateDao(variate);
-    if (result.code === 200) {
+    if (result && result.code === 200) {
       this.setState({
         visible: false,
         elmName: '',

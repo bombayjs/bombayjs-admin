@@ -149,7 +149,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
   async getEventVariate(condition: IGetEventVariateListConditions) {
     this.setState({ loading: true });
     const result = await getEventVariateListDao(condition);
-    if (result.code === 200) {
+    if (result && result.code === 200) {
       this.setState({
         loading: false,
         data: result.data,
@@ -177,7 +177,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
   handleActive = async (active: boolean, record: IEventVariate) => {
     const variate: IEventVariate = { ...record, is_use: active ? 1 : 0 };
     const result = await setEventVariateDao(variate);
-    if (result.code === 200) {
+    if (result && result.code === 200) {
       const { form } = this.props;
       const fieldsValue = form.getFieldsValue();
       const cond: IGetEventVariateListConditions = {
@@ -228,7 +228,7 @@ class Home extends React.Component<HomeProps, HomeStates> {
     };
 
     const result = await setEventVariateDao(variate);
-    if (result.code === 200) {
+    if (result && result.code === 200) {
       const { form } = this.props;
       const fieldsValue = form.getFieldsValue();
       const cond: IGetEventVariateListConditions = {
