@@ -13,3 +13,10 @@ export async function getEventVariateListDao(params: IGetEventVariateListConditi
     data: params,
   });
 }
+
+export async function getEventVariateDao(params: IGetEventVariateListConditions) {
+  return request('/api/v1/eventvariate/get', {
+    method: 'POST',
+    data: params,
+  });
+}

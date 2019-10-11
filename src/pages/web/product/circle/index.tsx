@@ -25,8 +25,10 @@ import {
   notification,
 } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
-import { addEventVariateDao } from '@/services/eventVariate';
+import { setEventVariateDao, getEventVariateDao, } from '@/services/eventVariate';
+import { setPageVariateDao, getPageVariateDao, } from '@/services/pageVariate';
 import EventVariateForm from '@/components/EventVariateForm';
+import PageVariateForm from '@/components/PageVariateForm';
 
 import styles from './style.less';
 
@@ -45,9 +47,18 @@ interface HomeStates {
   circleing: boolean;
   projectUrl: string;
   tempProjectUrl: string;
+  page: {
+    _id: string;
+    name: string;
+    path: string;
+  };
+  visiblePage: boolean;
   visible: boolean;
-  elmPath: string;
-  elmName: string;
+  record: {
+    _id: string;
+    name: string;
+    marker: string;
+  }; // 正在编辑的事件
 }
 
 @connect(({ project, loading }: ConnectState) => ({
@@ -60,42 +71,83 @@ class Home extends React.Component<HomeProps, HomeStates> {
 
   constructor(props: HomeProps) {
     super(props);
-    const project = props.projectList.find(item => item.token === props.projectToken);
+    console.log(props.projectToken)
     this.state = {
       projectType: 'web',
       circleing: false,
-      projectUrl: project ? project.url : '',
-      tempProjectUrl: project ? project.url : '', // 保存中间projectUrl
+      projectUrl: '',
+      tempProjectUrl: '', // 保存中间projectUrl
+      page: {
+        _id: '',
+        name: '',
+        path: '',
+      },
+      visiblePage: false,
       visible: false,
-      elmPath: '', // 元素路径
-      elmName: '', // 元素名称
+      record: {
+        _id: '',
+        name: '',
+        marker: '',
+      },
     };
     this.iframeRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.props.dispatch({
+  async componentDidMount() {
+    await this.props.dispatch({
       type: 'project/fetchProjectList',
     });
-    window.addEventListener('message', this.handleCircle, false);
+    const project = this.props.projectList.find(item => item.token === this.props.projectToken);
+    this.setState({
+      projectUrl: project ? project.url : '',
+      tempProjectUrl: project ? project.url : '', // 保存中间projectUrl
+    })
+    window.addEventListener('message', this.handleMessage, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('message', this.handleCircle, false);
+    window.removeEventListener('message', this.handleMessage, false);
   }
 
-  handleCircle = (event: MessageEvent) => {
+  handleMessage = async (event: MessageEvent) => {
     console.log(event);
     if (!event.data || !event.data.t) return;
     if (event.data.t === 'setElmPath') {
-      this.setState({
-        visible: true,
-        elmPath: event.data.path,
-      });
+      const result = await getEventVariateDao({
+        project_token: this.props.projectToken,
+        marker: event.data.path,
+      })
+      if (result && result.code === 200) {
+        const { _id, name, marker, } = result.data
+        this.setState({
+          visible: true,
+          record: {
+            _id,
+            name,
+            marker,
+          }
+        });
+      } else {
+        this.setState({
+          visible: true,
+          record: {
+            _id: '',
+            name: '',
+            marker: event.data.path,
+          }
+        });
+      }
+
     } else if (event.data.t === 'setPage') {
       this.setState({
-        tempProjectUrl: event.data.page,
+        page: {
+          _id: '',
+          name: '',
+          path: event.data.page,
+        },
+        tempProjectUrl: event.data.href,
       });
+
     }
   };
 
@@ -163,6 +215,40 @@ class Home extends React.Component<HomeProps, HomeStates> {
     });
   };
 
+  handleVisiblePage = async (visiblePage: boolean) => {
+    const path = this.state.page.path
+    if (visiblePage) {
+      const result = await getPageVariateDao({
+        project_token: this.props.projectToken,
+        path,
+      })
+      if (result && result.code === 200) {
+        const { _id, name, path, } = result.data
+        this.setState({
+        visiblePage: true,
+        page: {
+            _id,
+            name,
+            path,
+          },
+        });
+      } else {
+        this.setState({
+        visiblePage: true,
+        page: {
+            _id: '',
+            name: '',
+            path,
+          },
+        });
+      }
+    } else {
+      this.setState({
+        visiblePage: false,
+      });
+    }
+  };
+
   handleSubmit = async values => {
     const variate: IEventVariate = {
       project_token: this.props.projectToken, // 项目id
@@ -170,11 +256,36 @@ class Home extends React.Component<HomeProps, HomeStates> {
       marker: values.marker, // 标识符 圈选就是路径
       type: 'circle', // 类型
     };
-    const result = await addEventVariateDao(variate);
+    const result = await setEventVariateDao(variate);
     if (result && result.code === 200) {
       this.setState({
         visible: false,
-        elmName: '',
+        record: {
+          _id: '',
+          name: '',
+          marker: '',
+        }
+      });
+    } else {
+      message.error(result.msg);
+    }
+  };
+
+  handleSubmitPage = async values => {
+    const variate: IPageVariate = {
+      project_token: this.props.projectToken, // 项目id
+      name: values.name, // 事件名称
+      path: values.path, // 标识符 圈选就是路径
+    };
+    const result = await setPageVariateDao(variate);
+    if (result && result.code === 200) {
+      this.setState({
+        visiblePage: false,
+        page: {
+          _id: '',
+          name: '',
+          path: values.path,
+        }
       });
     } else {
       message.error(result.msg);
@@ -188,8 +299,9 @@ class Home extends React.Component<HomeProps, HomeStates> {
       tempProjectUrl,
       circleing,
       visible,
-      elmPath,
-      elmName,
+      record,
+      page,
+      visiblePage,
     } = this.state;
 
     const iframeStyle =
@@ -246,6 +358,9 @@ class Home extends React.Component<HomeProps, HomeStates> {
               />
             </div>
           </Col>
+          <Col span={2}>
+            <Button onClick={() => this.handleVisiblePage(true)}>定义页面</Button>
+          </Col>
         </Row>
         <iframe
           title="iframe"
@@ -255,11 +370,18 @@ class Home extends React.Component<HomeProps, HomeStates> {
           src={projectUrl}
         ></iframe>
         <EventVariateForm
-          name={elmName}
-          marker={elmPath}
+          name={record.name}
+          marker={record.marker}
           visible={visible}
           onClose={() => this.handleModalVisible(false)}
           handleSubmit={this.handleSubmit}
+        />
+        <PageVariateForm
+          name={page.name}
+          path={page.path}
+          visible={visiblePage}
+          onClose={() => this.handleVisiblePage(false)}
+          handleSubmit={this.handleSubmitPage}
         />
       </div>
     );
