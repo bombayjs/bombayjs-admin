@@ -55,6 +55,34 @@ export default [
           },
         ],
       },
+      // 阿里云应用列表
+      {
+        path: '/web/technology',
+        name: 'technology',
+        icon: 'aliyun',
+        routes: [
+          {
+            path: '/web/technology/application', // 应用
+            name: 'application',
+            icon: 'mobile',
+          },
+          {
+            path: '/web/technology/latitude', // 纬度
+            name: 'latitude',
+            icon: 'unordered-list',
+            routes: [
+              {
+                path: '/web/technology/latitude/url', // 页面
+                name: 'url',
+                component: './web/technology/latitude/url',
+              },
+            ],
+          },
+          // {
+          //   path: '/web/technology/setting', // 设置
+          // }
+        ],
+      },
       {
         component: './404',
       },

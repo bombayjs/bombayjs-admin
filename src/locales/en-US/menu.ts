@@ -49,4 +49,8 @@ export default {
   'menu.editor.koni': 'Koni Editor',
 
   'menu.setting': 'setting',
+  'menu.technology': 'Technical operation',
+  'menu.technology.application': 'Application',
+  'menu.technology.latitude': 'Latitude',
+  'menu.technology.latitude.url': 'Url',
 };

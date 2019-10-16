@@ -1,0 +1,61 @@
+.urlContainer {
+  flex: auto;
+  .urlListContainer {
+    float: left;
+    width: 340px;
+    .urlListSeachInput {
+      width: 280px;
+    }
+    .urlListSearchButton {
+      width: 57px;
+      margin-left: 3px;
+      color: #fff;
+      background: #1890ff;
+    }
+    .urlListContent {
+      padding: 0;
+      li {
+        display: block;
+        height: 40px;
+        margin-top: 20px;
+        padding: 0 10px;
+        line-height: 40px;
+        // background-color: #f6fafe;
+        background-color: #fff;
+        border-radius: 4px;
+        cursor: pointer;
+        span {
+          &:first-child {
+            float: left;
+            max-width: 220px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+          &:last-child {
+            float: right;
+          }
+        }
+        &:hover {
+          color: #fff;
+          background-color: #90c9ff;
+        }
+        &.active {
+          color: #fff;
+          background-color: #1890ff;
+        }
+      }
+    }
+  }
+  .urlContentContainer {
+    float: left;
+    width: 790px;
+    padding: 0 20px;
+  }
+  .commonGraphHeight {
+    height: 280px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 0 0 4px 4px;
+  }
+}

@@ -52,4 +52,8 @@ export default {
   'menu.product': '产品运营',
   'menu.product.circle': '圈选',
   'menu.product.eventvariate': '事件管理',
+  'menu.technology': '技术运营',
+  'menu.technology.application': '应用',
+  'menu.technology.latitude': '纬度',
+  'menu.technology.latitude.url': '页面',
 };

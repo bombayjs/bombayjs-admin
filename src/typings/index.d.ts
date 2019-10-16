@@ -37,3 +37,18 @@ interface IGetPageVariateListConditions {
   path?: string;
   is_use?: 0 | 1;
 }
+
+interface IGetLatitude {
+  metric: string;
+  measures: string[];
+  filters?: {
+    page?: string;
+    t?: string;
+  };
+  dimensions?: string[];
+  intervalMillis: string;
+  startTime: number;
+  endTime: number;
+  orderBy: string;
+  order: string;
+}
