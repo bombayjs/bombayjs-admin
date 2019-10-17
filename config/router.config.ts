@@ -53,6 +53,11 @@ export default [
             name: 'eventvariate',
             component: './web/product/eventvariate',
           },
+          {
+            path: '/web/product/group',
+            name: 'group',
+            component: './web/product/group',
+          },
         ],
       },
       // 阿里云应用列表
