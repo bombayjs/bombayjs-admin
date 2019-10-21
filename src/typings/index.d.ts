@@ -46,7 +46,7 @@ interface IGetLatitude {
     t?: string;
   };
   dimensions?: string[];
-  intervalMillis: string;
+  intervalMillis: number;
   startTime: number;
   endTime: number;
   orderBy: string;

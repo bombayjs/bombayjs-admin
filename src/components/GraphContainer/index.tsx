@@ -6,8 +6,24 @@ interface GraphConfig {
   title: string;
 }
 
-const GraphContainer = (ParamsComponent: any, config: GraphConfig): React.ComponentClass<{}> =>
-  class extends Component<{}, {}> {
+interface GraphProps {
+  activePage?: {
+    page: string;
+    pv?: string;
+    uv?: string;
+    active?: boolean;
+  };
+}
+
+type AnyComponent<P = any> =
+  | (new (props: P) => React.Component)
+  | ((props: P & { children?: React.ReactNode }) => React.ReactElement<any> | null);
+
+const GraphContainer = (
+  ParamsComponent: AnyComponent,
+  config: GraphConfig,
+): React.ComponentClass<GraphProps> =>
+  class extends Component<GraphProps> {
     handleClick = () => {
       console.log(12);
     };

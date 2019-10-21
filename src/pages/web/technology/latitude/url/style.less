@@ -1,8 +1,16 @@
+:global {
+  .ant-pro-basicLayout-content {
+    position: relative;
+  }
+}
 .urlContainer {
-  flex: auto;
+  position: absolute;
+  display: flex;
+  flex-flow: row;
+  height: 100%;
   .urlListContainer {
-    float: left;
     width: 340px;
+    overflow-y: scroll;
     .urlListSeachInput {
       width: 280px;
     }
@@ -13,6 +21,7 @@
       background: #1890ff;
     }
     .urlListContent {
+      width: 340px;
       padding: 0;
       li {
         display: block;
@@ -48,12 +57,12 @@
     }
   }
   .urlContentContainer {
-    float: left;
-    width: 790px;
-    padding: 0 20px;
+    flex: 1;
+    padding: 0 30px;
+    overflow-y: scroll;
   }
   .commonGraphHeight {
-    height: 280px;
+    margin-bottom: 20px;
     padding: 20px;
     background-color: #fff;
     border-radius: 0 0 4px 4px;

@@ -60,7 +60,7 @@ class UrlContainer extends Component<{}, UrlContainerState> {
       measures: ['pv', 'uv'],
       dimensions: ['page'],
       filters: {},
-      intervalMillis: '1m',
+      intervalMillis: 60 * 1000,
       startTime: 1570171354481,
       endTime: new Date().getTime(),
       orderBy: 'pv',

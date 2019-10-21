@@ -1,34 +1,19 @@
 import React, { Component } from 'react';
 // 引入组件
-import {
-  G2,
-  Chart,
-  Geom,
-  Axis,
-  Tooltip,
-  Coord,
-  Label,
-  Legend,
-  View,
-  Guide,
-  Shape,
-  Facet,
-  Util,
-} from 'bizcharts';
+import { Chart, Geom, Axis, Tooltip, Legend } from 'bizcharts';
 import GraphContainer from '@/components/GraphContainer';
 // 引入服务
 import { getLatitudeData } from '@/services/latitude';
 // 引入样式
 import styles from './style.less';
 
-interface UrlListData {
-  page: string;
-  pv?: string;
-  uv?: string;
-  active?: boolean;
-}
 interface UrlPvUvProps {
-  activePage: UrlListData;
+  activePage: {
+    page: string;
+    pv?: string;
+    uv?: string;
+    active?: boolean;
+  };
 }
 interface UrlPvUvState {
   urlPvUvDataResult: null | {};
@@ -68,24 +53,40 @@ class UrlPvUv extends Component<UrlPvUvProps, UrlPvUvState> {
     const urlPvUvDataResult = await this.handleGetPvUvData();
     const tempUrlPvUvDataResult: GraphUrlPvUvDataResult[] = [];
     if (urlPvUvDataResult.code === 200) {
-      urlPvUvDataResult.data.data.forEach((objItem: UrlPvUvData) => {
-        tempUrlPvUvDataResult.push(
-          {
-            type: 'pv',
-            time: objItem.format.slice(5, 16),
-            value: objItem.pv,
-          },
-          {
-            type: 'uv',
-            time: objItem.format.slice(5, 16),
-            value: objItem.uv,
-          },
-        );
-      });
+      (urlPvUvDataResult.data.allData || urlPvUvDataResult.data.data).forEach(
+        (objItem: UrlPvUvData) => {
+          const time = this.handleFormatTime(objItem.date);
+          tempUrlPvUvDataResult.push(
+            {
+              type: 'pv',
+              time,
+              value: objItem.pv,
+            },
+            {
+              type: 'uv',
+              time,
+              value: objItem.uv,
+            },
+          );
+        },
+      );
     }
     this.setState({
       urlPvUvDataResult: tempUrlPvUvDataResult.length ? tempUrlPvUvDataResult : null,
     });
+  };
+
+  handleFormatTime = (time: number): string => {
+    // 格式化时间处理
+    const date = new Date(time);
+    const Y = `${date.getFullYear()}-`;
+    const M = `${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}-`;
+    const D = `${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()} `;
+    const h = `${date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}:`;
+    const m = `${date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()}:`;
+    const s = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds();
+    const tempDate = Y + M + D + h + m + s;
+    return tempDate.slice(5, 16);
   };
 
   handleGetPvUvData = async () => {
@@ -96,8 +97,8 @@ class UrlPvUv extends Component<UrlPvUvProps, UrlPvUvState> {
       filters: {
         page: this.state.activePageValue,
       },
-      intervalMillis: '30m',
-      startTime: new Date().getTime() - 10 * 60 * 60 * 1000,
+      intervalMillis: 4 * 60 * 60 * 1000,
+      startTime: new Date().getTime() - 20 * 60 * 60 * 1000,
       endTime: new Date().getTime(),
       orderBy: 'pv',
       order: 'DESC',
