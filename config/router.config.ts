@@ -81,6 +81,21 @@ export default [
                 name: 'url',
                 component: './web/technology/latitude/url',
               },
+              {
+                path: '/web/technology/latitude/geography', // 地理
+                name: 'geography',
+                component: './web/technology/latitude/geography',
+              },
+              {
+                path: '/web/technology/latitude/terminal', // 终端
+                name: 'terminal',
+                component: './web/technology/latitude/terminal',
+              },
+              {
+                path: '/web/technology/latitude/network', // 终端
+                name: 'network',
+                component: './web/technology/latitude/network',
+              },
             ],
           },
           // {

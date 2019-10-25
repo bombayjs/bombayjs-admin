@@ -57,4 +57,7 @@ export default {
   'menu.technology.latitude': '纬度',
   'menu.technology.latitude.url': '页面',
   'menu.product.group': '用户分群',
+  'menu.technology.latitude.geography': '地理',
+  'menu.technology.latitude.terminal': '终端',
+  'menu.technology.latitude.network': '网络',
 };

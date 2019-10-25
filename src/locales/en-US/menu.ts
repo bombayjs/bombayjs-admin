@@ -53,4 +53,7 @@ export default {
   'menu.technology.application': 'Application',
   'menu.technology.latitude': 'Latitude',
   'menu.technology.latitude.url': 'Url',
+  'menu.technology.latitude.geography': 'Geography',
+  'menu.technology.latitude.terminal': 'Terminal',
+  'menu.technology.latitude.network': 'Network',
 };

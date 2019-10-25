@@ -1,0 +1,53 @@
+div.optionListContainer {
+  flex: 0 0 auto;
+  width: 382px;
+  overflow-y: scroll;
+  border-right: 1px solid #cecece;
+  p {
+    font-weight: bold;
+  }
+  .listSeachInput {
+    width: 290px;
+  }
+  .listSearchButton {
+    width: 57px;
+    margin-left: 3px;
+    color: #fff;
+    background: #1890ff;
+  }
+  .listContent {
+    width: 352px;
+    padding: 0;
+    li {
+      display: block;
+      height: 40px;
+      margin-top: 20px;
+      padding: 0 10px;
+      line-height: 40px;
+      // background-color: #f6fafe;
+      background-color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      span {
+        &:first-child {
+          float: left;
+          max-width: 220px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        &:last-child {
+          float: right;
+        }
+      }
+      &:hover {
+        color: #fff;
+        background-color: #90c9ff;
+      }
+      &.active {
+        color: #fff;
+        background-color: #1890ff;
+      }
+    }
+  }
+}

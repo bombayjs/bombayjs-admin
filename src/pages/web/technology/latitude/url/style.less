@@ -3,68 +3,25 @@
     position: relative;
   }
 }
-.urlContainer {
+section.geographyContainer {
   position: absolute;
   display: flex;
-  flex-flow: row;
+  width: 100%;
   height: 100%;
-  .urlListContainer {
-    width: 340px;
-    overflow-y: scroll;
-    .urlListSeachInput {
-      width: 280px;
-    }
-    .urlListSearchButton {
-      width: 57px;
-      margin-left: 3px;
-      color: #fff;
-      background: #1890ff;
-    }
-    .urlListContent {
-      width: 340px;
-      padding: 0;
-      li {
-        display: block;
-        height: 40px;
-        margin-top: 20px;
-        padding: 0 10px;
-        line-height: 40px;
-        // background-color: #f6fafe;
-        background-color: #fff;
-        border-radius: 4px;
-        cursor: pointer;
-        span {
-          &:first-child {
-            float: left;
-            max-width: 220px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-          }
-          &:last-child {
-            float: right;
-          }
-        }
-        &:hover {
-          color: #fff;
-          background-color: #90c9ff;
-        }
-        &.active {
-          color: #fff;
-          background-color: #1890ff;
-        }
-      }
+  :global {
+    .ant-tabs-nav .ant-tabs-tab {
+      margin: 0;
+      padding: 12px 23px;
     }
   }
-  .urlContentContainer {
-    flex: 1;
+  .geographyContent {
+    flex: 1 1 0;
+    min-width: 600px;
     padding: 0 30px;
     overflow-y: scroll;
   }
-  .commonGraphHeight {
-    margin-bottom: 20px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 0 0 4px 4px;
+  .commonTabFloatStyle {
+    float: left;
+    width: 50%;
   }
 }

@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 // 引入组件
 import OptionList from '@/components/OptionList';
-import PvUv from '@/components/GraphHOC/PvUv';
+import AccessSpeed from '@/components/GraphHOC/AccessSpeed';
 import JsError from '@/components/GraphHOC/JsError';
-import JsErrorCluster from '@/components/GraphHOC/JsErrorCluster';
-import ApiDetail from '@/components/GraphHOC/ApiDetail';
-import TerminalDistribution from './TerminalDistribution';
-// 引入样式
-import styles from './style.less';
+import ApiSuccess from '@/components/GraphHOC/ApiSuccess';
 // 引入服务
 import { getLatitudeData } from '@/services/latitude';
+// 引入样式
+import styles from '../url/style.less';
 
-class UrlContainer extends Component {
+export default class Network extends Component {
   public state = {
     listData: [],
     listTitle: '按访问量排行',
@@ -35,7 +33,7 @@ class UrlContainer extends Component {
       const tempListData = tempResult.data.map(
         (listDataResultItem: any, listDataResultIndex: number) => ({
           isActive: listDataResultIndex === 0,
-          name: listDataResultItem.page,
+          name: listDataResultItem.ct ? listDataResultItem.ct : 'Null',
           resultNum: `${listDataResultItem.pv} (${(
             (listDataResultItem.pv / tempResult.total) *
             100
@@ -62,8 +60,8 @@ class UrlContainer extends Component {
     // 组装不同图表的数据
     let params = {
       metric: 'webstat.url',
-      measures: ['pv', 'uv'],
-      dimensions: ['page'],
+      measures: ['pv', 'count'],
+      dimensions: ['ct'],
       filters: {},
       intervalMillis: 4 * 60 * 60 * 1000,
       startTime: new Date().getTime() - 20 * 60 * 60 * 1000,
@@ -71,12 +69,14 @@ class UrlContainer extends Component {
       orderBy: 'pv',
       order: 'DESC',
     };
-    if (type === 'pvUv') {
+    if (type === 'accessSpeed') {
       params = {
         ...params,
         ...{
+          measures: ['avg_fpt', 'avg_tti', 'avg_load', 'avg_ready', 'avg_dom'],
           filters: {
-            page: this.state.listActiveOption.name,
+            t: 'perf',
+            ct: this.state.listActiveOption.name,
           },
           dimensions: [],
         },
@@ -85,48 +85,31 @@ class UrlContainer extends Component {
       params = {
         ...params,
         ...{
-          measures: ['uv', 'count'],
+          measures: ['pv', 'uv', 'count'],
           filters: {
             t: 'error',
-            page: this.state.listActiveOption.name,
+            ct: this.state.listActiveOption.name,
           },
           dimensions: [],
         },
       };
-    } else if (type === 'jsErrorCluster') {
+    } else if (type === 'apiSuccess') {
       params = {
         ...params,
         ...{
-          measures: ['count', 'uv'],
+          measures: ['sum_apisucc', 'sum_apifail'],
           filters: {
-            t: 'error',
-            page: this.state.listActiveOption.name,
+            t: 'health',
+            ct: this.state.listActiveOption.name,
           },
-          dimensions: ['msg'],
+          dimensions: [],
         },
       };
-    } else if (type === 'apiDetail') {
+    } else {
       params = {
         ...params,
         ...{
-          measures: ['count', 'avg_time'],
-          filters: {
-            t: 'api',
-            page: this.state.listActiveOption.name,
-          },
-          dimensions: ['url'],
-        },
-      };
-    } else if (type === 'terminalDistribution') {
-      params = {
-        ...params,
-        ...{
-          measures: ['pv', 'uv'],
-          filters: {
-            t: 'pv',
-            page: this.state.listActiveOption.name,
-          },
-          dimensions: ['detector.browser.name'],
+          startTime: 0,
         },
       };
     }
@@ -135,11 +118,9 @@ class UrlContainer extends Component {
 
   render() {
     const { listData, listTitle, listActiveOption } = this.state;
-    const pvUvParams = this.handleAssembleParams('pvUv');
+    const accessSpeedParams = this.handleAssembleParams('accessSpeed');
     const jsErrorParams = this.handleAssembleParams('jsError');
-    const jsErrorClusterParams = this.handleAssembleParams('jsErrorCluster');
-    const apiDetailParams = this.handleAssembleParams('apiDetail');
-    const terminalDistribution = this.handleAssembleParams('terminalDistribution');
+    const apiSuccessParams = this.handleAssembleParams('apiSuccess');
     return (
       <section className={styles.geographyContainer}>
         {/* 选项列表组件 */}
@@ -152,17 +133,12 @@ class UrlContainer extends Component {
         <div className={styles.geographyContent}>
           {listActiveOption.name && (
             <>
-              <PvUv graphParams={pvUvParams} activeOptionName={listActiveOption.name} />
+              <AccessSpeed
+                graphParams={accessSpeedParams}
+                activeOptionName={listActiveOption.name}
+              />
               <JsError graphParams={jsErrorParams} activeOptionName={listActiveOption.name} />
-              <JsErrorCluster
-                graphParams={jsErrorClusterParams}
-                activeOptionName={listActiveOption.name}
-              />
-              <ApiDetail graphParams={apiDetailParams} activeOptionName={listActiveOption.name} />
-              <TerminalDistribution
-                graphParams={terminalDistribution}
-                activeOptionName={listActiveOption.name}
-              />
+              <ApiSuccess graphParams={apiSuccessParams} activeOptionName={listActiveOption.name} />
             </>
           )}
         </div>
@@ -170,5 +146,3 @@ class UrlContainer extends Component {
     );
   }
 }
-
-export default UrlContainer;
