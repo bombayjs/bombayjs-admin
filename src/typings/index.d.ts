@@ -52,3 +52,13 @@ interface IGetLatitude {
   orderBy: string;
   order: string;
 }
+
+interface ILatitudeData {
+  code: number;
+  data: {
+    data: any[];
+    total: number;
+  };
+  message: string;
+  success: boolean;
+}

@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
+import { connect } from 'dva';
 // 引入组件
 import OptionList from '@/components/OptionList';
 import AccessSpeed from '@/components/GraphHOC/AccessSpeed';
 import JsError from '@/components/GraphHOC/JsError';
 import ApiSuccess from '@/components/GraphHOC/ApiSuccess';
 // 引入服务
+import { ConnectProps, ConnectState } from '@/models/connect';
 import { getLatitudeData } from '@/services/latitude';
 // 引入样式
 import styles from '../url/style.less';
 
-export default class Network extends Component {
+interface NetworkProps extends ConnectProps {
+  filterStartTime: number;
+  filterEndTime: number;
+}
+
+class Network extends Component<NetworkProps> {
   public state = {
     listData: [],
     listTitle: '按访问量排行',
@@ -21,15 +28,31 @@ export default class Network extends Component {
   };
 
   componentDidMount() {
-    this.handleGetListData();
+    this.handleGetListDataFun(this.props);
   }
 
-  handleGetListData = async () => {
+  componentWillReceiveProps(nextProps: NetworkProps, preState: any) {
+    this.handleGetListDataFun(nextProps);
+  }
+
+  handleGetListDataFun = (props: NetworkProps) => {
+    // 根据筛选参数获取页面列表
+    const { filterStartTime, filterEndTime } = props;
+    this.handleGetListData({
+      intervalMillis: (filterEndTime - filterStartTime) / 7,
+      startTime: filterStartTime,
+      endTime: filterEndTime,
+    });
+  };
+
+  handleGetListData = async (connectParams?: any) => {
     // 获取列表数据
-    const params = this.handleAssembleParams();
+    const params = connectParams
+      ? { ...this.handleAssembleParams(), ...connectParams }
+      : this.handleAssembleParams();
     const listDataResult = await getLatitudeData(params);
-    if (listDataResult.code === 200) {
-      const tempResult = listDataResult.data;
+    const tempResult = listDataResult.data;
+    if (listDataResult.code === 200 && tempResult.data.length) {
       const tempListData = tempResult.data.map(
         (listDataResultItem: any, listDataResultIndex: number) => ({
           isActive: listDataResultIndex === 0,
@@ -43,6 +66,15 @@ export default class Network extends Component {
       this.setState({
         listData: tempListData,
         listActiveOption: tempListData[0],
+      });
+    } else {
+      this.setState({
+        listData: [],
+        listActiveOption: {
+          isActive: false,
+          name: '',
+          resultNum: '',
+        },
       });
     }
   };
@@ -63,7 +95,7 @@ export default class Network extends Component {
       measures: ['pv', 'count'],
       dimensions: ['ct'],
       filters: {},
-      intervalMillis: 4 * 60 * 60 * 1000,
+      intervalMillis: (20 * 60 * 60 * 1000) / 7,
       startTime: new Date().getTime() - 20 * 60 * 60 * 1000,
       endTime: new Date().getTime(),
       orderBy: 'pv',
@@ -131,7 +163,7 @@ export default class Network extends Component {
         />
         {/* 图表内容 */}
         <div className={styles.geographyContent}>
-          {listActiveOption.name && (
+          {listActiveOption && (
             <>
               <AccessSpeed
                 graphParams={accessSpeedParams}
@@ -146,3 +178,8 @@ export default class Network extends Component {
     );
   }
 }
+
+export default connect(({ global }: ConnectState) => ({
+  filterStartTime: global.filterStartTime,
+  filterEndTime: global.filterEndTime,
+}))(Network);

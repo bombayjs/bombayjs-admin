@@ -24,6 +24,7 @@ export interface GlobalHeaderRightProps extends ConnectProps {
 }
 
 const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
+  const { theme, layout, projectList, projectToken, dispatch } = props;
   const sessionDateRange = getSessionDateRange();
   const initBegin = moment()
     .add(-30, 'minutes')
@@ -38,9 +39,17 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
     } else {
       initDateRange = dateRangeDict[type];
     }
+    if (dispatch) {
+      dispatch({
+        type: 'global/changeFilterTime',
+        payload: {
+          filterStartTime: new Date(begin).getTime(),
+          filterEndTime: new Date(end).getTime(),
+        },
+      });
+    }
   }
   const [dateRange, setDateRange] = useState(initDateRange);
-  const { theme, layout, projectList, projectToken } = props;
   const onChange = ({ key }: ClickParam) => {
     const { location } = window;
     location.href = `${location.origin + location.pathname}?token=${key}`;
@@ -175,6 +184,15 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = props => {
       setDateRange(dateRangeDict[type]);
     } else {
       setDateRange(`${type[0]} 至 ${type[1]}`);
+    }
+    if (dispatch) {
+      dispatch({
+        type: 'global/changeFilterTime',
+        payload: {
+          filterStartTime: new Date(begin).getTime(),
+          filterEndTime: new Date(end).getTime(),
+        },
+      });
     }
   };
 

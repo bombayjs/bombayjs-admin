@@ -47,20 +47,27 @@ function OptionList(props: OptionListProps) {
         </Form>
       )}
       {/* 选项列表UI */}
-      <ul className={styles.listContent}>
-        {listData.map(listDataItem => (
-          <li
-            key={listDataItem.name}
-            className={listDataItem.isActive ? styles.active : undefined}
-            onClick={() => {
-              handleClickListItem(listDataItem);
-            }}
-          >
-            <span>{listDataItem.name}</span>
-            <span>{listDataItem.resultNum}</span>
-          </li>
-        ))}
-      </ul>
+      {listData.length ? (
+        <ul className={styles.listContent}>
+          {listData.map(listDataItem => (
+            <li
+              key={listDataItem.name}
+              className={listDataItem.isActive ? styles.active : undefined}
+              onClick={() => {
+                handleClickListItem(listDataItem);
+              }}
+            >
+              <span>{listDataItem.name}</span>
+              <span>{listDataItem.resultNum}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className={styles.listNoData}>
+          <Icon type="file-search" style={{ fontSize: '42px' }} />
+          <p>暂无数据</p>
+        </div>
+      )}
     </>
   );
   return (

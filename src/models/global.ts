@@ -1,5 +1,6 @@
 import { Reducer } from 'redux';
 import { Subscription, Effect } from 'dva';
+import moment from 'moment';
 
 import { NoticeIconData } from '@/components/NoticeIcon';
 import { queryNotices } from '@/services/user';
@@ -14,6 +15,8 @@ export interface NoticeItem extends NoticeIconData {
 export interface GlobalModelState {
   collapsed: boolean;
   notices: NoticeItem[];
+  filterStartTime: number;
+  filterEndTime: number;
 }
 
 export interface GlobalModelType {
@@ -28,6 +31,7 @@ export interface GlobalModelType {
     changeLayoutCollapsed: Reducer<GlobalModelState>;
     saveNotices: Reducer<GlobalModelState>;
     saveClearedNotices: Reducer<GlobalModelState>;
+    changeFilterTime: Reducer<GlobalModelState>;
   };
   subscriptions: { setup: Subscription };
 }
@@ -38,6 +42,10 @@ const GlobalModel: GlobalModelType = {
   state: {
     collapsed: false,
     notices: [],
+    filterStartTime: moment()
+      .add(-24, 'hours')
+      .valueOf(),
+    filterEndTime: moment().valueOf(),
   },
 
   effects: {
@@ -102,8 +110,11 @@ const GlobalModel: GlobalModelType = {
   },
 
   reducers: {
-    changeLayoutCollapsed(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    changeLayoutCollapsed(state, { payload }): GlobalModelState {
       return {
+        notices: [],
+        filterStartTime: 0,
+        filterEndTime: 0,
         ...state,
         collapsed: payload,
       };
@@ -111,15 +122,32 @@ const GlobalModel: GlobalModelType = {
     saveNotices(state, { payload }): GlobalModelState {
       return {
         collapsed: false,
+        filterStartTime: moment()
+          .add(-24, 'hours')
+          .valueOf(),
+        filterEndTime: moment().valueOf(),
         ...state,
         notices: payload,
       };
     },
-    saveClearedNotices(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    saveClearedNotices(state, { payload }): GlobalModelState {
+      return {
+        filterStartTime: 0,
+        filterEndTime: 0,
+        ...state,
+        collapsed: true,
+        notices: (state as GlobalModelState).notices.filter(
+          (item): boolean => item.type !== payload,
+        ),
+      };
+    },
+    changeFilterTime(state, { payload }): GlobalModelState {
       return {
         collapsed: false,
+        notices: [],
         ...state,
-        notices: state.notices.filter((item): boolean => item.type !== payload),
+        filterStartTime: payload.filterStartTime,
+        filterEndTime: payload.filterEndTime,
       };
     },
   },

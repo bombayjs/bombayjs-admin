@@ -1,5 +1,4 @@
-import { Button, Icon, Menu, Dropdown, Card, Row, Col, DatePicker } from 'antd';
-import { ClickParam } from 'antd/es/menu';
+import { Button, Icon, Dropdown, Card, Row, Col } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 // import RangeCalendar from 'rc-calendar/lib/RangeCalendar';
@@ -247,9 +246,13 @@ const SelectProject: React.FC<SelectProjectProps> = props => {
 
   return (
     <Dropdown overlay={menu} placement="bottomRight" trigger={['click']}>
-      <Button style={{ marginRight: '20px' }}>
-        {dateRange} <Icon type="down" />
-      </Button>
+      {props.children ? (
+        props.children
+      ) : (
+        <Button style={{ marginRight: '20px' }}>
+          {dateRange} <Icon type="down" />
+        </Button>
+      )}
     </Dropdown>
   );
 };
