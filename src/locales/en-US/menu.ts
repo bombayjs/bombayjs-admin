@@ -56,4 +56,5 @@ export default {
   'menu.technology.latitude.geography': 'Geography',
   'menu.technology.latitude.terminal': 'Terminal',
   'menu.technology.latitude.network': 'Network',
+  'menu.viewdetail': 'View Detail',
 };

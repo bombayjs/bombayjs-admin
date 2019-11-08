@@ -103,6 +103,13 @@ export default [
           // }
         ],
       },
+      // 访问明细页
+      {
+        path: '/web/viewdetail',
+        name: 'viewdetail',
+        component: './web/viewdetail',
+        icon: 'monitor',
+      },
       {
         component: './404',
       },

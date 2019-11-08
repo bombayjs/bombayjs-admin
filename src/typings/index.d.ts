@@ -62,3 +62,14 @@ interface ILatitudeData {
   message: string;
   success: boolean;
 }
+
+interface IPostAllLog {
+  startTime: number;
+  endTime: number;
+  currentPage: number;
+  pageSize: number;
+  order: string;
+  query: {
+    t?: string;
+  };
+}

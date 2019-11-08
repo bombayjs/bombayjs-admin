@@ -60,4 +60,5 @@ export default {
   'menu.technology.latitude.geography': '地理',
   'menu.technology.latitude.terminal': '终端',
   'menu.technology.latitude.network': '网络',
+  'menu.viewdetail': '访问明细',
 };
